@@ -23,13 +23,15 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Mijael
  */
-public class JframeMain extends javax.swing.JFrame {
+public class JframeLogin extends javax.swing.JFrame {
 
     /**
      * Creates new form JframeMain
      */
-    public JframeMain() {
+    public JframeLogin() {
         initComponents();
+        this.setLocationRelativeTo(this);
+        
     }
 
     /**
@@ -44,9 +46,9 @@ public class JframeMain extends javax.swing.JFrame {
         jPanel5 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jTFUsuario = new javax.swing.JTextField();
+        JTFid = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        jPasswordField1 = new javax.swing.JPasswordField();
+        JTFPassword = new javax.swing.JPasswordField();
         jBIngresar = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jBSalir = new javax.swing.JButton();
@@ -78,16 +80,16 @@ public class JframeMain extends javax.swing.JFrame {
         );
 
         jLabel6.setFont(new java.awt.Font("Myanmar Text", 1, 18)); // NOI18N
-        jLabel6.setText("Usuario");
+        jLabel6.setText("Cedula");
 
-        jTFUsuario.addActionListener(new java.awt.event.ActionListener() {
+        JTFid.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTFUsuarioActionPerformed(evt);
+                JTFidActionPerformed(evt);
             }
         });
-        jTFUsuario.addKeyListener(new java.awt.event.KeyAdapter() {
+        JTFid.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                jTFUsuarioKeyTyped(evt);
+                JTFidKeyTyped(evt);
             }
         });
 
@@ -155,8 +157,8 @@ public class JframeMain extends javax.swing.JFrame {
                                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(106, 106, 106)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jTFUsuario)
-                                    .addComponent(jPasswordField1, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE))))
+                                    .addComponent(JTFid)
+                                    .addComponent(JTFPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE))))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -169,11 +171,11 @@ public class JframeMain extends javax.swing.JFrame {
                 .addGap(37, 37, 37)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(jTFUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(JTFid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
-                    .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(JTFPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -184,22 +186,44 @@ public class JframeMain extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTFUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTFUsuarioActionPerformed
+    private void JTFidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JTFidActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTFUsuarioActionPerformed
+    }//GEN-LAST:event_JTFidActionPerformed
 
-    private void jTFUsuarioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTFUsuarioKeyTyped
+    private void JTFidKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_JTFidKeyTyped
         char ingreso = evt.getKeyChar();
 
         
-    }//GEN-LAST:event_jTFUsuarioKeyTyped
+    }//GEN-LAST:event_JTFidKeyTyped
 
     private void jBIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBIngresarActionPerformed
-        if(this.jTFUsuario.getText().equalsIgnoreCase("root")
-            && (Arrays.equals(this.jPasswordField1.getPassword(), new char[]{'1','2','3','4','5','6'}))){
-            this.setVisible(false);
-        }else
-        JOptionPane.showMessageDialog(null,"Usuario o clave invalidos!!!");
+        ConexionBD cn = new ConexionBD();
+        String id = this.JTFid.getText();
+        char[] pass = this.JTFPassword.getPassword();
+        String password = new String(pass);
+        
+        if("".equals(id)|| id.length()<10 || !cn.esSoloNumeros(id)){
+            JOptionPane.showMessageDialog(null,"Por favor, ingrese un numero de cedula válido");  
+            return;
+        }
+        if(pass.length==0){ 
+            JOptionPane.showMessageDialog(null,"Por favor, ingrese su contraseña");
+            return;
+        }
+        
+        int validacion = ConexionBD.verificarCredenciales(id, password);
+        if (validacion==1) {
+            JFrameMenu menu = new JFrameMenu(); 
+            menu.setVisible(true);
+            this.dispose();
+        }else if(validacion==2){ 
+            JOptionPane.showMessageDialog(null, "Usuario no registrado, por favor registrese.");      
+        }else if(validacion==3){ 
+            JOptionPane.showMessageDialog(null, "Cedula o contraseña incorrecta.");
+        }else{ 
+            JOptionPane.showMessageDialog(null, "Error al verificar credenciales.");
+        }
+
     }//GEN-LAST:event_jBIngresarActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -225,25 +249,28 @@ public class JframeMain extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(JframeMain.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(JframeLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(JframeMain.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(JframeLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(JframeMain.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(JframeLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(JframeMain.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(JframeLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new JframeMain().setVisible(true);
+                new JframeLogin().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPasswordField JTFPassword;
+    private javax.swing.JTextField JTFid;
     private javax.swing.JButton jBIngresar;
     private javax.swing.JButton jBSalir;
     private javax.swing.JButton jButton1;
@@ -252,7 +279,5 @@ public class JframeMain extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JTextField jTFUsuario;
     // End of variables declaration//GEN-END:variables
 }

@@ -206,6 +206,9 @@ public class JframeRegistro extends javax.swing.JFrame {
        } else{ 
         JOptionPane.showMessageDialog(null, "Error al registrar el usuario");      
         }
+        JFrameMenu menu = new JFrameMenu(); 
+        menu.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTFidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTFidActionPerformed
